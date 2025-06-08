@@ -116,10 +116,23 @@ class EmployeeGUI:
 
     def show_about(self):
         about_window = tk.Toplevel(self.root)
-        about_window.title("Acerca de")
-        about_window.geometry("480x200")
-        about_window.resizable(False, False)
+        about_window.overrideredirect(True)
         about_window.configure(bg="#222831")
+
+        # Tamaño de la ventana acerca de
+        width, height = 600, 260
+
+        # Obtener posición y tamaño de la ventana principal
+        self.root.update_idletasks()
+        x_root = self.root.winfo_x()
+        y_root = self.root.winfo_y()
+        w_root = self.root.winfo_width()
+        h_root = self.root.winfo_height()
+
+        # Calcular posición centrada respecto a la ventana principal
+        x = x_root + (w_root // 2) - (width // 2)
+        y = y_root + (h_root // 2) - (height // 2)
+        about_window.geometry(f"{width}x{height}+{x}+{y}")
 
         msg = (
             "Si te gustó este proyecto considera donar al autor\n"
@@ -133,11 +146,39 @@ class EmployeeGUI:
             text=msg,
             bg="#222831",
             fg="#f1c40f",
-            font=("Calibri", 13, "bold"),
-            wraplength=460,
+            font=("Calibri", 16, "bold"),
+            wraplength=580,
             justify="center"
         )
-        label.pack(expand=True, fill="both", padx=20, pady=20)
+        label.pack(expand=True, fill="both", padx=20, pady=(30,10))
+
+        btn_frame = tk.Frame(about_window, bg="#222831")
+        btn_frame.pack(pady=(0, 20))
+
+        def close_about():
+            about_window.destroy()
+
+        btn1 = tk.Button(
+            btn_frame,
+            text="Por supuesto",
+            command=close_about,
+            bg="#27ae60",
+            fg="white",
+            font=("Calibri", 12, "bold"),
+            width=16
+        )
+        btn1.pack(side="left", padx=10)
+
+        btn2 = tk.Button(
+            btn_frame,
+            text="Conseguite un empleo honesto",
+            command=close_about,
+            bg="#e74c3c",
+            fg="white",
+            font=("Calibri", 12, "bold"),
+            width=24
+        )
+        btn2.pack(side="left", padx=10)
 
     def display_employees(self):
         # Limpia la tabla
