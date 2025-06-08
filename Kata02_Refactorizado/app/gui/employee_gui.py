@@ -90,16 +90,26 @@ class EmployeeGUI:
 
         # Tabla para mostrar empleados
         self.tree = ttk.Treeview(self.root, columns=("ID", "Name", "Age", "DOJ", "Email", "Gender", "Contact", "Address"), show="headings")
+        self.tree.column("ID", width=60, anchor="center")
+        self.tree.column("Name", width=150)
+        self.tree.column("Age", width=60, anchor="center")
+        self.tree.column("DOJ", width=100, anchor="center")
+        self.tree.column("Email", width=180)
+        self.tree.column("Gender", width=80, anchor="center")
+        self.tree.column("Contact", width=100)
+        self.tree.column("Address", width=200)
         for col in self.tree["columns"]:
             self.tree.heading(col, text=col)
         self.tree.pack(fill=tk.BOTH, expand=True)
 
+        # Evento para seleccionar empleado al hacer clic en la fila
+        self.tree.bind("<ButtonRelease-1>", self.get_data)
 
         # Boton inferior para salir
         exit_button = tk.Button(self.root, text="Salir", command=self.root.destroy, bg="#e74c3c", fg="white", font=("Calibri", 14, "bold"))
         exit_button.pack(side=tk.BOTTOM, pady=20)
 
- # Botón "Acerca de" en la esquina inferior derecha
+        # Botón "Acerca de" en la esquina inferior derecha
         about_button = tk.Button(
             self.root,
             text="Acerca de",
@@ -221,10 +231,17 @@ class EmployeeGUI:
     def update_employee(self):
         if not hasattr(self, "row") or not self.row:
             return
-        self.service.update_employee(
-            self.row[0], self.name.get(), self.age.get(), self.doj.get(), self.email.get(),
-            self.gender.get(), self.contact.get(), self.txt_address.get(1.0, tk.END)
+        employee = Employee(
+            id=self.row[0],
+            name=self.name.get(),
+            age=self.age.get(),
+            doj=self.doj.get(),
+            email=self.email.get(),
+            gender=self.gender.get(),
+            contact=self.contact.get(),
+            address=self.txt_address.get(1.0, tk.END).strip()
         )
+        self.service.update_employee(employee)
         messagebox.showinfo("Success", "Record Updated")
         self.clear_fields()
         self.display_employees()
